@@ -183,7 +183,7 @@ class ImageContainer(object):
             self.custom = element.get_value()
             return self.custom
         elif element.get_name() == CAMERA_MODEL_LENS_MODEL_VALUE:
-            return ' '.join([self.model, self.lens_model])
+            return ' | '.join([self.model, self.lens_model])
         elif element.get_name() == LENS_MAKE_LENS_MODEL_VALUE:
             return ' '.join([self.lens_make, self.lens_model])
         else:
