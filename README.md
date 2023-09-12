@@ -1,11 +1,15 @@
 # semi-utils
 
 > [![hugo-papermod](https://img.shields.io/badge/Semi--Utils-@LeslieVan-red)](https://github.com/leslievan/semi-utils)
-> [![GitHub](https://img.shields.io/github/license/leslievan/semi-utils)](https://github.com/leslievan/semi-utils/blob/master/LICENSE)
-> [![download](https://img.shields.io/github/v/release/leslievan/semi-utils)](https://github.com/leslievan/semi-utils/releases)
+> [![download](https://img.shields.io/github/downloads/leslievan/semi-utils/total.svg)](https://github.com/leslievan/semit-utils/releases)
+> [![release](https://img.shields.io/github/v/release/leslievan/semi-utils)](https://github.com/leslievan/semi-utils/releases)
+> [![license](https://img.shields.io/github/license/leslievan/semi-utils)](https://github.com/leslievan/semi-utils/blob/master/LICENSE)
 > ![language](https://img.shields.io/github/languages/top/leslievan/semi-utils?color=orange)
 >
 > **这是一个用于给照片批量添加水印、处理照片像素比、图像色彩和质量的工具。**
+
+如果您觉得程序对您有所帮助的话，可以点击 [Sponsor](https://cdn.lsvm.xyz/wechat.jpg) 按钮请作者喝杯咖啡，谢谢！
+
 
 ## 开发文档
 
@@ -72,6 +76,9 @@
 
 #### 手动下载
 
+<details>
+<summary>点击展开</summary>
+
 - 下载[源码](http://file.lsvm.xyz/semi-utils-latest-source.zip)后解压，比如解压到 `~/semi-utils`，路径需要自行替换。
 
    > 你可以右键单击解压后的文件夹，按住 Opt 键-选择将xxx拷贝为路径名称 ，用剪贴板中的实际路径替换下面命令中的 `~/semi-utils`.
@@ -103,9 +110,15 @@
 
 - 处理好的图片存放在 `~/semi-utils/output` 中
 
+
+</details>
+
 ## 配置项
 
 通过 `config.yaml` 配置。
+
+<details>
+<summary>点击展开</summary>
 
 ```yaml
 base:
@@ -242,6 +255,7 @@ logo:
 |background_blur|背景模糊|![8](images/8.jpeg)|
 |background_blur_with_white_border|背景模糊+白框|![9](images/9.jpeg)|
 
+</details>
 
 ## 常见问题
 
@@ -287,12 +301,18 @@ python3 --version
 
 此命令将返回已安装的 Python3 版本号。
 
-## 关于
+## 特别感谢
 
-鸣谢：[JetBrains](https://jb.gg/OpenSourceSupport) 为本项目提供的开源许可
+![JetBrains](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
+
+感谢 [JetBrains](https://jb.gg/OpenSourceSupport) 为本项目提供的开源许可。
 
 ## 许可证
 
-本项目的发布基于 [Apache License 2.0](LICENSE).
+Semi-Utils 的发布基于 [Apache License 2.0](LICENSE).
 
-本项目引用了 [exiftool](https://exiftool.org/)，其发布基于 [GPL v1 + Artistic License 2.0](https://exiftool.org/#license)。
+Semi-Utils 引用了 [exiftool](https://exiftool.org/)，其发布基于 [GPL v1 + Artistic License 2.0](https://exiftool.org/#license)。
+
+## 关于
+
+[![Stargazers over time](https://starchart.cc/leslievan/semi-utils.svg)](https://starchart.cc/leslievan/semi-utils)

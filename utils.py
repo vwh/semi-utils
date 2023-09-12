@@ -1,8 +1,8 @@
 import logging
 import platform
 import re
+import shutil
 import subprocess
-import unicodedata
 from pathlib import Path
 
 from PIL import Image
@@ -14,6 +14,9 @@ from enums.constant import TRANSPARENT
 if platform.system() == 'Windows':
     EXIFTOOL_PATH = Path('./exiftool/exiftool.exe')
     ENCODING = 'gbk'
+elif shutil.which('exiftool') is not None:
+    EXIFTOOL_PATH = shutil.which('exiftool')
+    ENCODING = 'utf-8'
 else:
     EXIFTOOL_PATH = Path('./exiftool/exiftool')
     ENCODING = 'utf-8'
@@ -362,7 +365,7 @@ def calculate_pixel_count(width: int, height: int) -> str:
     return f"{megapixel_count:.2f} MP"
 
 
-def extract_attribute(data_dict: dict, *keys, default_value: str = '') -> str:
+def extract_attribute(data_dict: dict, *keys, default_value: str = '', prefix='', suffix='') -> str:
     """
     从字典中提取对应键的属性值
 
@@ -373,5 +376,5 @@ def extract_attribute(data_dict: dict, *keys, default_value: str = '') -> str:
     """
     for key in keys:
         if key in data_dict:
-            return data_dict[key]
+            return data_dict[key] + suffix
     return default_value

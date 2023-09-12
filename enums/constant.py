@@ -22,6 +22,12 @@ TOTAL_PIXEL_NAME = '总像素(MP)'
 TOTAL_PIXEL_VALUE = 'TotalPixel'
 CAMERA_MAKE_CAMERA_MODEL_NAME = '相机厂商 + 相机型号(eg. DJI FC123)'
 CAMERA_MAKE_CAMERA_MODEL_VALUE = 'CameraMake_CameraModel'
+FILENAME_NAME = '文件名'
+FILENAME_VALUE = 'Filename'
+DATE_FILENAME_NAME = '日期 + 文件名(eg. 2023-01-01 DXO_0001.jpg)'
+DATE_FILENAME_VALUE = 'Date_Filename'
+DATETIME_FILENAME_NAME = '日期时间 + 文件名(eg. 2023-01-01 12:00 DXO_0001.jpg)'
+DATETIME_FILENAME_VALUE = 'Datetime_Filename'
 
 LOCATION_LEFT_TOP = 'left_top'
 LOCATION_LEFT_BOTTOM = 'left_bottom'
@@ -30,3 +36,5 @@ LOCATION_RIGHT_BOTTOM = 'right_bottom'
 TRANSPARENT = (0, 0, 0, 0)
 DEBUG = False
 GRAY = '#CBCBC9'
+
+DEFAULT_VALUE = '--'

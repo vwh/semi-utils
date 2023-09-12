@@ -9,17 +9,7 @@ from PIL.Image import Transpose
 from dateutil import parser
 
 from entity.config import ElementConfig
-from enums.constant import CAMERA_MAKE_CAMERA_MODEL_VALUE
-from enums.constant import CAMERA_MODEL_LENS_MODEL_VALUE
-from enums.constant import CUSTOM_VALUE
-from enums.constant import DATETIME_VALUE
-from enums.constant import DATE_VALUE
-from enums.constant import LENS_MAKE_LENS_MODEL_VALUE
-from enums.constant import LENS_VALUE
-from enums.constant import MAKE_VALUE
-from enums.constant import MODEL_VALUE
-from enums.constant import PARAM_VALUE
-from enums.constant import TOTAL_PIXEL_VALUE
+from enums.constant import *
 from utils import calculate_pixel_count
 from utils import extract_attribute
 from utils import get_exif
@@ -56,18 +46,18 @@ def get_datetime(exif) -> datetime:
 
 
 def get_focal_length(exif):
-    focal_length = '0'
-    focal_length_in_35mm_film = '0'
+    focal_length = DEFAULT_VALUE
+    focal_length_in_35mm_film = DEFAULT_VALUE
 
     try:
         focal_lengths = PATTERN.findall(extract_attribute(exif, ExifId.FOCAL_LENGTH.value))
         try:
-            focal_length = focal_lengths[0] if focal_length else '0'
+            focal_length = focal_lengths[0] if focal_length else DEFAULT_VALUE
         except IndexError as e:
             logger.info(
                 f'ValueError: 不存在焦距：{focal_lengths} : {e}')
         try:
-            focal_length_in_35mm_film: str = focal_lengths[1] if focal_length else '0'
+            focal_length_in_35mm_film: str = focal_lengths[1] if focal_length else DEFAULT_VALUE
         except IndexError as e:
             logger.info(f'ValueError: 不存在 35mm 焦距：{focal_lengths} : {e}')
     except Exception as e:
@@ -94,9 +84,10 @@ class ImageContainer(object):
         self.lens_make: str = extract_attribute(self.exif, ExifId.LENS_MAKE.value)
         self.date: datetime = get_datetime(self.exif)
         self.focal_length, self.focal_length_in_35mm_film = get_focal_length(self.exif)
-        self.f_number: str = extract_attribute(self.exif, ExifId.F_NUMBER.value, default_value='0.0')
-        self.exposure_time: str = extract_attribute(self.exif, ExifId.EXPOSURE_TIME.value, default_value='0') + 's'
-        self.iso: str = extract_attribute(self.exif, ExifId.ISO.value, default_value='0.0')
+        self.f_number: str = extract_attribute(self.exif, ExifId.F_NUMBER.value, default_value=DEFAULT_VALUE)
+        self.exposure_time: str = extract_attribute(self.exif, ExifId.EXPOSURE_TIME.value, default_value=DEFAULT_VALUE,
+                                                    suffix='s')
+        self.iso: str = extract_attribute(self.exif, ExifId.ISO.value, default_value=DEFAULT_VALUE)
 
         # 是否使用等效焦距
         self.use_equivalent_focal_length: bool = False
@@ -121,8 +112,25 @@ class ImageContainer(object):
         # 水印图片
         self.watermark_img = None
 
+        self._param_dict[MODEL_VALUE] = self.model
+        self._param_dict[PARAM_VALUE] = self.get_param_str()
+        self._param_dict[MAKE_VALUE] = self.make
+        self._param_dict[DATETIME_VALUE] = self._parse_datetime()
+        self._param_dict[DATE_VALUE] = self._parse_date()
+        self._param_dict[LENS_VALUE] = self.lens_model
+        self._param_dict[FILENAME_VALUE] = self.path.name
         self._param_dict[TOTAL_PIXEL_VALUE] = calculate_pixel_count(self.original_width, self.original_height)
-        self._param_dict[CAMERA_MAKE_CAMERA_MODEL_VALUE] = ' '.join([self.make, self.model])
+
+        self._param_dict[CAMERA_MAKE_CAMERA_MODEL_VALUE] = ' '.join(
+            [self._param_dict[MAKE_VALUE], self._param_dict[MODEL_VALUE]])
+        self._param_dict[LENS_MAKE_LENS_MODEL_VALUE] = ' '.join(
+            [self.lens_make, self._param_dict[LENS_VALUE]])
+        self._param_dict[CAMERA_MODEL_LENS_MODEL_VALUE] = ' '.join(
+            [self._param_dict[MODEL_VALUE], self._param_dict[LENS_VALUE]])
+        self._param_dict[DATE_FILENAME_VALUE] = ' '.join(
+            [self._param_dict[DATE_VALUE], self._param_dict[FILENAME_VALUE]])
+        self._param_dict[DATETIME_FILENAME_VALUE] = ' '.join(
+            [self._param_dict[DATETIME_VALUE], self._param_dict[FILENAME_VALUE]])
 
     def get_height(self):
         return self.get_watermark_img().height
@@ -167,25 +175,11 @@ class ImageContainer(object):
 
         if element is None or element.get_name() == '':
             return ''
-        if element.get_name() == MODEL_VALUE:
-            return self.model
-        elif element.get_name() == PARAM_VALUE:
-            return self.get_param_str()
-        elif element.get_name() == MAKE_VALUE:
-            return self.make
-        elif element.get_name() == DATETIME_VALUE:
-            return self._parse_datetime()
-        elif element.get_name() == DATE_VALUE:
-            return self._parse_date()
-        elif element.get_name() == LENS_VALUE:
-            return self.lens_model
-        elif element.get_name() == CUSTOM_VALUE:
+        if element.get_name() == CUSTOM_VALUE:
             self.custom = element.get_value()
             return self.custom
-        elif element.get_name() == CAMERA_MODEL_LENS_MODEL_VALUE:
-            return ' | '.join([self.model, self.lens_model])
-        elif element.get_name() == LENS_MAKE_LENS_MODEL_VALUE:
-            return ' '.join([self.lens_make, self.lens_model])
+        elif element.get_name() in self._param_dict:
+            return self._param_dict[element.get_name()]
         else:
             return ''
 
@@ -247,4 +241,9 @@ class ImageContainer(object):
 
         if self.watermark_img.mode != 'RGB':
             self.watermark_img = self.watermark_img.convert('RGB')
-        self.watermark_img.save(target_path, quality=quality, encoding='utf-8', exif=self.img.info['exif'])
+
+        if 'exif' in self.img.info:
+            self.watermark_img.save(target_path, quality=quality, encoding='utf-8',
+                                    exif=self.img.info['exif'] if 'exif' in self.img.info else '')
+        else:
+            self.watermark_img.save(target_path, quality=quality, encoding='utf-8')
